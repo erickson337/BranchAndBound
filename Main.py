@@ -73,30 +73,24 @@ def search_best_way(matriz):
     solucao = branch_and_bound(matriz, start, goal, [start], solucao)
 
     print(solucao)
-    print(custo)
 
 
 
 def branch_and_bound(matriz, node, goal, solucao_aux, solucao):
-    print(matriz[node])
     for idx, adj in enumerate(matriz[node]):
         if idx == node or adj == 0 or solucao_aux.count(idx) > 0 or solucao_aux.count(goal) > 0:
             continue
 
         if idx == goal:
+            solucao_aux.append(idx)
             if  calcula_custo(solucao_aux, matriz) < calcula_custo(solucao, matriz) or calcula_custo(solucao, matriz) == 0:
                 solucao = solucao_aux
-                solucao.append(idx)
         else:
-            print(f"Adjacencias do vertice: {node}")
-            solucao_aux.append(idx)
-            print(solucao_aux)
-           # print(f"Custo: {calcula_custo(solucao_aux, matriz)}")
-           # print(f"Custo sol: {calcula_custo(solucao, matriz)}")
+            solucao_aux_aux = solucao_aux.copy()
+            solucao_aux_aux.append(idx)
             if calcula_custo(solucao_aux, matriz) < calcula_custo(solucao, matriz) or calcula_custo(solucao, matriz) == 0:
-                solucao = branch_and_bound(matriz, idx, goal, solucao_aux.copy(), solucao)
-            else:
-                solucao_aux.pop()
+                solucao = branch_and_bound(matriz, idx, goal, solucao_aux_aux, solucao)
+
     return solucao
 
 def calcula_custo(solucao, matriz):
