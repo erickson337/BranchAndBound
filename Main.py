@@ -6,7 +6,7 @@ import random
 def cls():
     os.system('cls' if os.name == 'nt' else 'clear')
 
-def optionsMenu():
+def options_menu():
     print('Selecione uma das opções abaixo:')
     print('1 - Cadastrar Matriz')
     print('2 - Gerar Matriz Aleatória')
@@ -14,13 +14,13 @@ def optionsMenu():
     print('4 - Mostrar Matriz Cadastrada')
     print('5 - Finalizar')
 
-def generateMatrizRandom():
+def generate_matriz_random():
     numbers = [-1, 0, 1, 2, 3, 4, 5, 6, 7, 8]
     size_matriz = random.randint(2, 8)
     matriz = [[random.choice(numbers) for x in range(size_matriz)] for y in range(size_matriz)]
     return matriz
 
-def InsertValuesMatriz(matriz):
+def Insert_values_matriz(matriz):
     data = matriz
     count = 0
     for i in range(len(matriz)):
@@ -37,7 +37,7 @@ def InsertValuesMatriz(matriz):
 
     return matriz
 
-def defineMatriz():
+def define_matriz():
     print('------------------- Definindo Matriz -------------------')
 
     matriz = []
@@ -56,7 +56,7 @@ def defineMatriz():
 
     return matriz
 
-def searchBestWay(matriz):
+def search_best_way(matriz):
     matriz = []
     matriz.append([0,6,0,0,0,0])
     matriz.append([0,0,53,0,5,0])
@@ -97,7 +97,6 @@ def branch_and_bound(matriz, node, goal, solucao_aux, solucao):
                 solucao = branch_and_bound(matriz, idx, goal, solucao_aux.copy(), solucao)
             else:
                 solucao_aux.pop()
-    print("foi")
     return solucao
 
 def calcula_custo(solucao, matriz):
@@ -111,21 +110,21 @@ def menu():
         close = False
         matriz = []
         while close != True:
-            optionsMenu()
+            options_menu()
 
             result = int(input('Opção: ').strip())
 
             if result == 1:
                 cls()
-                matriz = InsertValuesMatriz(defineMatriz())
+                matriz = Insert_values_matriz(define_matriz())
             elif result == 2:
                 cls()
-                matriz = generateMatrizRandom()
+                matriz = generate_matriz_random()
                 for x in matriz:
                     print(x)
             elif result == 3:
                 cls()
-                searchBestWay(matriz)
+                search_best_way(matriz)
             elif result == 4:
                 cls()
                 for x in matriz:
