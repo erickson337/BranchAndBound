@@ -1,5 +1,6 @@
 import os
 import re
+import random
 
 # limpa o console
 def cls():
@@ -8,9 +9,16 @@ def cls():
 def optionsMenu():
     print('Selecione uma das opções abaixo:')
     print('1 - Cadastrar Matriz')
-    print('2 - Encontrar Caminho')
-    print('3 - Mostrar Matriz Cadastrada')
-    print('4 - Finalizar')
+    print('2 - Gerar Matriz Aleatória')
+    print('3 - Encontrar Caminho')
+    print('4 - Mostrar Matriz Cadastrada')
+    print('5 - Finalizar')
+
+def generateMatrizRandom():
+    numbers = [-1, 0, 1, 2, 3, 4, 5, 6, 7, 8]
+    size_matriz = random.randint(2, 8)
+    matriz = [[random.choice(numbers) for x in range(size_matriz)] for y in range(size_matriz)]
+    return matriz
 
 def InsertValuesMatriz(matriz):
     data:list = matriz
@@ -65,12 +73,17 @@ def menu():
                 matriz = InsertValuesMatriz(defineMatriz())
             elif result == 2:
                 cls()
-                searchBestWay(matriz)
+                matriz = generateMatrizRandom()
+                for x in matriz:
+                    print(x)
             elif result == 3:
+                cls()
+                searchBestWay(matriz)
+            elif result == 4:
                 cls()
                 for x in matriz:
                     print(x)
-            elif result == 4:
+            elif result == 5:
                 close = True
                 print('Encerrando...')
             else:
