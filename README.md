@@ -1,6 +1,7 @@
 # BranchAndBound
 
 <h2>Requisitos de Configuração do Projeto</h2>
+
 * Versão do python utilizada: 3.9
 * Necessário a instalação do gerenciador de pacotes - pip
 
@@ -9,9 +10,14 @@
 * pip install pycairo
 
 <h2>Comando para executar</h2>
-```py Main.py```
+```run code: 
+    py Main.py
+```
 
+<h3>Dupla</h3>
 
+  * Antônio Carlos
+  * Erickson Ferreira
 
 
 
