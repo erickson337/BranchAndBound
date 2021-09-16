@@ -1,6 +1,9 @@
 import os
 import re
 import random
+from igraph import *
+
+
 
 # limpa o console
 def cls():
@@ -12,7 +15,8 @@ def options_menu():
     print('2 - Gerar Matriz Aleatória')
     print('3 - Encontrar Caminho')
     print('4 - Mostrar Matriz Cadastrada')
-    print('5 - Finalizar')
+    print('5 - Cria matriz de exemplo')
+    print('6 - Finalizar')
 
 def generate_matriz_random():
     numbers = [-1, 0, 1, 2, 3, 4, 5, 6, 7, 8]
@@ -56,7 +60,7 @@ def define_matriz():
 
     return matriz
 
-def search_best_way(matriz):
+def define_matriz_exemplo():
     matriz = []
     matriz.append([0,6,0,0,0,0])
     matriz.append([0,0,53,0,5,0])
@@ -65,10 +69,12 @@ def search_best_way(matriz):
     matriz.append([0,0,0,5,0,5])
     matriz.append([0,6,0,0,0,1])
 
+    return matriz
+
+def search_best_way(matriz):
     start = int(input('Start: ').strip())
     goal = int(input('Goal: ').strip())
     solucao = list()
-    custo = 0
 
     solucao = branch_and_bound(matriz, start, goal, [start], solucao)
 
@@ -95,11 +101,12 @@ def branch_and_bound(matriz, node, goal, solucao_aux, solucao):
 
 def calcula_custo(solucao, matriz):
     soma = 0
-    for i in range(0, len(solucao)-2):
+    for i in range(0, len(solucao)-1):
         soma += matriz[solucao[i]][solucao[i+1]]
     return soma
 
 def menu():
+    cls()
     try:
         close = False
         matriz = []
@@ -120,9 +127,20 @@ def menu():
                 search_best_way(matriz)
             elif result == 4:
                 cls()
-                for x in matriz:
-                    print(x)
+                g = Graph()  
+                g.add_vertices(len(matriz))  
+                vec = []
+                for x in range(0, len(matriz)):
+                    for y in range(0, len(matriz)):
+                        if(matriz[x][y] != 0):
+                            vec.append((x,y))
+                g.add_edges(vec)  
+                plot(g, vertex_label=range(0,len(matriz)), vertex_color="white")
             elif result == 5:
+                matriz = define_matriz_exemplo()
+                cls()
+                print("Matriz criada com sucesso!")
+            elif result == 6:
                 close = True
                 print('Encerrando...')
             else:
