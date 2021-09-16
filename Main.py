@@ -78,6 +78,7 @@ def search_best_way(matriz):
     if len(solucao) > 0:
         print("\nExiste uma solução viável: \n")
         print(solucao)
+        print("\n")
     else:
         print("\n\nNão existe uma solução viável\n\n")
 
@@ -95,7 +96,7 @@ def branch_and_bound(matriz, node, goal, solucao_aux, solucao):
         else:
             solucao_aux_aux = solucao_aux.copy()
             solucao_aux_aux.append(idx)
-            if (calcula_custo(solucao_aux, matriz) < calcula_custo(solucao, matriz) or calcula_custo(solucao, matriz) == 0) and calcula_custo(solucao_aux, matriz) != -1:
+            if (calcula_custo(solucao_aux_aux, matriz) < calcula_custo(solucao, matriz) or calcula_custo(solucao, matriz) == 0) and calcula_custo(solucao_aux_aux, matriz) != -1:
                 solucao = branch_and_bound(matriz, idx, goal, solucao_aux_aux, solucao)
 
     return solucao
