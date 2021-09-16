@@ -63,7 +63,7 @@ def define_matriz():
 def define_matriz_exemplo():
     matriz = []
     matriz.append([0,6,0,0,0,0])
-    matriz.append([0,0,53,0,5,0])
+    matriz.append([0,0,1,0,5,0])
     matriz.append([0,3,0,2,0,0])
     matriz.append([0,0,0,0,0,0])
     matriz.append([0,0,0,5,0,5])
@@ -78,7 +78,11 @@ def search_best_way(matriz):
 
     solucao = branch_and_bound(matriz, start, goal, [start], solucao)
 
-    print(solucao)
+    if len(solucao) > 0:
+        print("Existe uma solução viável: ")
+        print(solucao)
+    else:
+        print("Não existe uma solução viável")
 
 
 
@@ -89,12 +93,12 @@ def branch_and_bound(matriz, node, goal, solucao_aux, solucao):
 
         if idx == goal:
             solucao_aux.append(idx)
-            if  calcula_custo(solucao_aux, matriz) < calcula_custo(solucao, matriz) or calcula_custo(solucao, matriz) == 0:
+            if  (calcula_custo(solucao_aux, matriz) < calcula_custo(solucao, matriz) or calcula_custo(solucao, matriz) == 0) and calcula_custo(solucao_aux, matriz) != -1:
                 solucao = solucao_aux
         else:
             solucao_aux_aux = solucao_aux.copy()
             solucao_aux_aux.append(idx)
-            if calcula_custo(solucao_aux, matriz) < calcula_custo(solucao, matriz) or calcula_custo(solucao, matriz) == 0:
+            if (calcula_custo(solucao_aux, matriz) < calcula_custo(solucao, matriz) or calcula_custo(solucao, matriz) == 0) and calcula_custo(solucao_aux, matriz) != -1:
                 solucao = branch_and_bound(matriz, idx, goal, solucao_aux_aux, solucao)
 
     return solucao
@@ -102,6 +106,9 @@ def branch_and_bound(matriz, node, goal, solucao_aux, solucao):
 def calcula_custo(solucao, matriz):
     soma = 0
     for i in range(0, len(solucao)-1):
+        if matriz[solucao[i]][solucao[i+1]] == -1:
+            return -1
+
         soma += matriz[solucao[i]][solucao[i+1]]
     return soma
 
@@ -128,19 +135,20 @@ def menu():
                 search_best_way(matriz)
             elif result == 4:
                 cls()
-                g = Graph()  
-                g.add_vertices(len(matriz))  
                 vec = []
+                edges = []
                 for x in range(0, len(matriz)):
                     for y in range(0, len(matriz)):
                         if(matriz[x][y] != 0):
-                            vec.append((x,y))
-                g.add_edges(vec)  
-                plot(g, vertex_label=range(0,len(matriz)), vertex_color="white")
+                            vec.append([x, y])
+                            edges.append(matriz[x][y])
+                g = Graph(n=len(matriz), edges=vec, edge_attrs={'weight': edges}, directed=True)  
+                layout = g.layout("large_graph")
+                plot(g, vertex_label=range(0,len(matriz)), vertex_color="white", layout=layout)
             elif result == 5:
                 matriz = define_matriz_exemplo()
                 cls()
-                print("Matriz criada com sucesso!")
+                print("Matriz criada com sucesso!\n")
             elif result == 6:
                 close = True
                 print('Encerrando...')
