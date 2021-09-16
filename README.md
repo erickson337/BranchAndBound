@@ -10,7 +10,7 @@
 * pip install pycairo
 
 <h2>Comando para executar</h2>
-```run code
+```run code: 
     py Main.py
 ```
 
