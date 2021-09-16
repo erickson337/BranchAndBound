@@ -3,8 +3,6 @@ import re
 import random
 from igraph import *
 
-
-
 # limpa o console
 def cls():
     os.system('cls' if os.name == 'nt' else 'clear')
@@ -26,14 +24,12 @@ def generate_matriz_random():
 
 def Insert_values_matriz(matriz):
     data = matriz
-    count = 0
     for i in range(len(matriz)):
         for j in range(len(matriz[i])):
-            count += 1
             valid = False
             while not valid:
-                result = input(f'Insira o {count}° valor: ').strip()
-                if re.match('^[0-9]*$', result):
+                result = input(f'Insira o valor entre o vértice {i} e o vértice {j}: ').strip()
+                if re.match('^[-+]?[0-9]*\.?[0-9]+$', result):
                     data[i][j] = int(result)
                     valid = True
                 else:
@@ -49,11 +45,11 @@ def define_matriz():
     while not valid:
         cls()
         try:
-            line = int(input('Insira a quantidade de linhas: ').strip())
-            column = int(input('Insira a quantidade de colunas: ').strip())
+            size = int(input('Insira a quantidade de vértices da matriz: ').strip())
+            #column = int(input('Insira a quantidade de colunas: ').strip())
 
-            if line and column:
-                matriz = [[0 for x in range(line)] for y in range(column)]
+            if size:
+                matriz = [[0 for x in range(size)] for y in range(size)]
                 valid = True
         except:
             print('Insira valores válidos!\n')
@@ -126,16 +122,23 @@ def menu():
                 cls()
                 search_best_way(matriz)
             elif result == 4:
-                cls()
                 g = Graph()  
                 g.add_vertices(len(matriz))  
                 vec = []
+                cls()
+                print("=================== Matriz utilizada ===================")
+                for i in matriz:
+                   print(i)
+
+                print("=========================================================")
+
                 for x in range(0, len(matriz)):
                     for y in range(0, len(matriz)):
                         if(matriz[x][y] != 0):
                             vec.append((x,y))
                 g.add_edges(vec)  
                 plot(g, vertex_label=range(0,len(matriz)), vertex_color="white")
+
             elif result == 5:
                 matriz = define_matriz_exemplo()
                 cls()
