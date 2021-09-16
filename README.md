@@ -14,10 +14,10 @@
     py Main.py
 ```
 
+<h3>Dupla</h3>
 
-* Dupla:
-    * Antônio Carlos
-    * Erickson Ferreira
+  * Antônio Carlos
+  * Erickson Ferreira
 
 
 
