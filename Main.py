@@ -11,7 +11,7 @@ def options_menu(matriz):
     print('Selecione uma das opções abaixo:')
     print('1 - Cadastrar Matriz')
     print('2 - Gerar Matriz Aleatória')
-    print('3 - Cria matriz de exemplo')
+    print('3 - Usar matriz de exemplo')
     if len(matriz) > 0:
         print('4 - Mostrar Matriz Cadastrada')
         print('5 - Encontrar Caminho')
@@ -60,7 +60,7 @@ def define_matriz():
 def define_matriz_exemplo():
     matriz = []
     matriz.append([0,6,0,0,0,0])
-    matriz.append([0,0,1,0,5,0])
+    matriz.append([0,0,-1,0,5,0])
     matriz.append([0,3,0,2,0,0])
     matriz.append([0,0,0,0,0,0])
     matriz.append([0,0,0,5,0,5])
