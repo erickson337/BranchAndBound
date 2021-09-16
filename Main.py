@@ -7,19 +7,21 @@ from igraph import *
 def cls():
     os.system('cls' if os.name == 'nt' else 'clear')
 
-def options_menu():
+def options_menu(matriz):
     print('Selecione uma das opções abaixo:')
     print('1 - Cadastrar Matriz')
     print('2 - Gerar Matriz Aleatória')
-    print('3 - Encontrar Caminho')
-    print('4 - Mostrar Matriz Cadastrada')
-    print('5 - Cria matriz de exemplo')
-    print('6 - Finalizar')
+    print('3 - Cria matriz de exemplo')
+    if len(matriz) > 0:
+        print('4 - Mostrar Matriz Cadastrada')
+        print('5 - Encontrar Caminho')
+    print('0 - Finalizar')
 
 def generate_matriz_random():
-    numbers = [-1, 0, 1, 2, 3, 4, 5, 6, 7, 8]
-    size_matriz = random.randint(2, 8)
-    matriz = [[random.choice(numbers) for x in range(size_matriz)] for y in range(size_matriz)]
+    numbers = [-1, 0, 1, 2, 3, 4, 0, 6, 7, 0]
+    
+    size_matriz = random.randint(2, 6)
+    matriz = [[ 0 if random.randint(0, 1) == 0 else random.choice(numbers) for x in range(size_matriz)] for y in range(size_matriz)]
     return matriz
 
 def Insert_values_matriz(matriz):
@@ -33,7 +35,7 @@ def Insert_values_matriz(matriz):
                     data[i][j] = int(result)
                     valid = True
                 else:
-                    print('Valor inválido!')
+                    print('\nValor inválido!\n')
 
     return matriz
 
@@ -46,20 +48,19 @@ def define_matriz():
         cls()
         try:
             size = int(input('Insira a quantidade de vértices da matriz: ').strip())
-            #column = int(input('Insira a quantidade de colunas: ').strip())
 
             if size:
                 matriz = [[0 for x in range(size)] for y in range(size)]
                 valid = True
         except:
-            print('Insira valores válidos!\n')
+            print('\nInsira valores válidos!\n')
 
     return matriz
 
 def define_matriz_exemplo():
     matriz = []
     matriz.append([0,6,0,0,0,0])
-    matriz.append([0,0,53,0,5,0])
+    matriz.append([0,0,1,0,5,0])
     matriz.append([0,3,0,2,0,0])
     matriz.append([0,0,0,0,0,0])
     matriz.append([0,0,0,5,0,5])
@@ -74,7 +75,11 @@ def search_best_way(matriz):
 
     solucao = branch_and_bound(matriz, start, goal, [start], solucao)
 
-    print(solucao)
+    if len(solucao) > 0:
+        print("\nExiste uma solução viável: \n")
+        print(solucao)
+    else:
+        print("\n\nNão existe uma solução viável\n\n")
 
 
 
@@ -85,12 +90,12 @@ def branch_and_bound(matriz, node, goal, solucao_aux, solucao):
 
         if idx == goal:
             solucao_aux.append(idx)
-            if  calcula_custo(solucao_aux, matriz) < calcula_custo(solucao, matriz) or calcula_custo(solucao, matriz) == 0:
+            if  (calcula_custo(solucao_aux, matriz) < calcula_custo(solucao, matriz) or calcula_custo(solucao, matriz) == 0) and calcula_custo(solucao_aux, matriz) != -1:
                 solucao = solucao_aux
         else:
             solucao_aux_aux = solucao_aux.copy()
             solucao_aux_aux.append(idx)
-            if calcula_custo(solucao_aux, matriz) < calcula_custo(solucao, matriz) or calcula_custo(solucao, matriz) == 0:
+            if (calcula_custo(solucao_aux, matriz) < calcula_custo(solucao, matriz) or calcula_custo(solucao, matriz) == 0) and calcula_custo(solucao_aux, matriz) != -1:
                 solucao = branch_and_bound(matriz, idx, goal, solucao_aux_aux, solucao)
 
     return solucao
@@ -98,6 +103,9 @@ def branch_and_bound(matriz, node, goal, solucao_aux, solucao):
 def calcula_custo(solucao, matriz):
     soma = 0
     for i in range(0, len(solucao)-1):
+        if matriz[solucao[i]][solucao[i+1]] == -1:
+            return -1
+
         soma += matriz[solucao[i]][solucao[i+1]]
     return soma
 
@@ -107,7 +115,7 @@ def menu():
         close = False
         matriz = []
         while close != True:
-            options_menu()
+            options_menu(matriz)
 
             result = int(input('Opção: ').strip())
 
@@ -117,39 +125,42 @@ def menu():
             elif result == 2:
                 cls()
                 matriz = generate_matriz_random()
-                print('Matriz gerada com sucesso!')
+                print('\nMatriz gerada com sucesso!\n')
             elif result == 3:
                 cls()
-                search_best_way(matriz)
-            elif result == 4:
-                g = Graph()  
-                g.add_vertices(len(matriz))  
-                vec = []
+                matriz = define_matriz_exemplo()
+                print("\nMatriz criada com sucesso!\n")
+            elif result == 4 and len(matriz) > 0:
                 cls()
-                print("=================== Matriz utilizada ===================")
+                print("\n\n=================== Matriz utilizada ===================")
                 for i in matriz:
                    print(i)
 
-                print("=========================================================")
+                print("=========================================================\n\n")
 
-                for x in range(0, len(matriz)):
-                    for y in range(0, len(matriz)):
-                        if(matriz[x][y] != 0):
-                            vec.append((x,y))
-                g.add_edges(vec)  
-                plot(g, vertex_label=range(0,len(matriz)), vertex_color="white")
-
-            elif result == 5:
-                matriz = define_matriz_exemplo()
+                vec = []
+                edges = []
+                try:
+                    for x in range(0, len(matriz)):
+                        for y in range(0, len(matriz)):
+                            if(matriz[x][y] != 0):
+                                vec.append([x, y])
+                                edges.append(matriz[x][y])
+                    g = Graph(n=len(matriz), edges=vec, edge_attrs={'weight': edges}, directed=True)  
+                    layout = g.layout("large_graph")
+                    plot(g, vertex_label=range(0,len(matriz)), vertex_color="white", layout=layout)
+                except:
+                    cls()
+            elif result == 5 and len(matriz) > 0:
                 cls()
-                print("Matriz criada com sucesso!")
-            elif result == 6:
+                search_best_way(matriz)
+            elif result == 0:
                 close = True
                 print('Encerrando...')
             else:
                 print('Opção Inválida!\n')
     except Exception as e:
-        print('Ocorreu um erro, tente novamente...\n')
+        print('Ocorreu um erro, tente novamente...\n\n')
         print(e)
     
 
