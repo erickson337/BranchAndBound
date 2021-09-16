@@ -11,7 +11,7 @@ def options_menu(matriz):
     print('Selecione uma das opções abaixo:')
     print('1 - Cadastrar Matriz')
     print('2 - Gerar Matriz Aleatória')
-    print('3 - Cria matriz de exemplo')
+    print('3 - Usar matriz de exemplo')
     if len(matriz) > 0:
         print('4 - Mostrar Matriz Cadastrada')
         print('5 - Encontrar Caminho')
@@ -60,7 +60,7 @@ def define_matriz():
 def define_matriz_exemplo():
     matriz = []
     matriz.append([0,6,0,0,0,0])
-    matriz.append([0,0,1,0,5,0])
+    matriz.append([0,0,-1,0,5,0])
     matriz.append([0,3,0,2,0,0])
     matriz.append([0,0,0,0,0,0])
     matriz.append([0,0,0,5,0,5])
@@ -78,6 +78,7 @@ def search_best_way(matriz):
     if len(solucao) > 0:
         print("\nExiste uma solução viável: \n")
         print(solucao)
+        print("\n")
     else:
         print("\n\nNão existe uma solução viável\n\n")
 
@@ -90,13 +91,15 @@ def branch_and_bound(matriz, node, goal, solucao_aux, solucao):
 
         if idx == goal:
             solucao_aux.append(idx)
-            if  (calcula_custo(solucao_aux, matriz) < calcula_custo(solucao, matriz) or calcula_custo(solucao, matriz) == 0) and calcula_custo(solucao_aux, matriz) != -1:
+
+            if  valida_solucoes(solucao, solucao_aux, matriz):
                 solucao = solucao_aux
         else:
-            solucao_aux_aux = solucao_aux.copy()
-            solucao_aux_aux.append(idx)
-            if (calcula_custo(solucao_aux, matriz) < calcula_custo(solucao, matriz) or calcula_custo(solucao, matriz) == 0) and calcula_custo(solucao_aux, matriz) != -1:
-                solucao = branch_and_bound(matriz, idx, goal, solucao_aux_aux, solucao)
+            solucao_aux_2 = solucao_aux.copy()
+            solucao_aux_2.append(idx)
+
+            if valida_solucoes(solucao, solucao_aux_2, matriz):
+                solucao = branch_and_bound(matriz, idx, goal, solucao_aux_2, solucao)
 
     return solucao
 
@@ -108,6 +111,12 @@ def calcula_custo(solucao, matriz):
 
         soma += matriz[solucao[i]][solucao[i+1]]
     return soma
+
+def valida_solucoes(solucao, solucao_aux, matriz):
+    custo_solucao =  calcula_custo(solucao, matriz)
+    custo_solucao_aux = calcula_custo(solucao_aux, matriz)
+
+    return (custo_solucao_aux < custo_solucao or custo_solucao == 0) and custo_solucao_aux != -1
 
 def menu():
     cls()
@@ -138,17 +147,19 @@ def menu():
 
                 print("=========================================================\n\n")
 
-                vec = []
                 edges = []
+                weight_edges = []
                 try:
                     for x in range(0, len(matriz)):
                         for y in range(0, len(matriz)):
                             if(matriz[x][y] != 0):
-                                vec.append([x, y])
-                                edges.append(matriz[x][y])
-                    g = Graph(n=len(matriz), edges=vec, edge_attrs={'weight': edges}, directed=True)  
-                    layout = g.layout("large_graph")
-                    plot(g, vertex_label=range(0,len(matriz)), vertex_color="white", layout=layout)
+                                edges.append([x, y])
+                                weight_edges.append(matriz[x][y])
+                    g = Graph(n=len(matriz), edges=edges, directed=True)  
+                    g.es['weight'] = weight_edges
+                    g.es['label'] = weight_edges
+
+                    plot(g, vertex_label=range(0,len(matriz)), vertex_color="white")
                 except:
                     cls()
             elif result == 5 and len(matriz) > 0:
