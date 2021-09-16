@@ -114,8 +114,7 @@ def menu():
             elif result == 2:
                 cls()
                 matriz = generate_matriz_random()
-                for x in matriz:
-                    print(x)
+                print('Matriz gerada com sucesso!')
             elif result == 3:
                 cls()
                 search_best_way(matriz)
